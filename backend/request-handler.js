@@ -19,6 +19,7 @@ module.exports = (req, res) => {
     // dar permisos de cors
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Request-Methods', 'OPTIONS, GET, PUT, POST, DELETE');
+    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, PUT, POST, DELETE');
     res.setHeader('Access-Control-Allow-Headers', '*');
     if (metodo === 'OPTIONS') {
         res.writeHead(200);
