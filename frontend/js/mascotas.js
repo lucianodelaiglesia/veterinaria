@@ -8,20 +8,18 @@ const btnGuardar = document.getElementById('btn-guardar');
 const btnCerrar = document.getElementsByClassName('btn-cerrar')
 const miModal = new bootstrap.Modal(document.getElementById('exampleModal'));
 
-let mascotas = [{
-    nombre: "Misha",
-    dueno: "Luchito",
-    tipo: "Gato"
-},
-{
-    nombre: "Bambi",
-    dueno: "Luchito",
-    tipo: "Perro"
-}];
+let mascotas = [];
 
-function listarMascotas() {
-    const htmlMascotas = mascotas.map((mascota, index) =>
-        `<tr>
+async function listarMascotas() {
+    try {
+        const respuesta = await fetch('http://localhost:5000/mascotas');
+        const mascotasDelServer = await respuesta.json();
+        if (Array.isArray(mascotasDelServer) && mascotasDelServer.length > 0) {
+            mascotas = mascotasDelServer;
+        }
+        const htmlMascotas = mascotas
+            .map((mascota, index) =>
+                `<tr>
         <th scope="row">${index}</th>
         <td>${mascota.nombre}</td>
         <td>${mascota.dueno}</td>
@@ -33,9 +31,12 @@ function listarMascotas() {
             </div>
         </td>
         </tr>`).join("");
-    listaMascotas.innerHTML = htmlMascotas;
-    Array.from(document.getElementsByClassName('editar')).forEach((botonEditar, index) => botonEditar.onclick = editar(index));
-    Array.from(document.getElementsByClassName('eliminar')).forEach((botonEliminar, index) => botonEliminar.onclick = eliminar(index));
+        listaMascotas.innerHTML = htmlMascotas;
+        Array.from(document.getElementsByClassName('editar')).forEach((botonEditar, index) => botonEditar.onclick = editar(index));
+        Array.from(document.getElementsByClassName('eliminar')).forEach((botonEliminar, index) => botonEliminar.onclick = eliminar(index));
+    } catch (error) {
+        throw error;
+    }
 }
 
 function enviarDatos(e) {
