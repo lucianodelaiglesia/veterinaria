@@ -7,12 +7,13 @@ const form = document.getElementById('form');
 const btnGuardar = document.getElementById('btn-guardar');
 const btnCerrar = document.getElementsByClassName('btn-cerrar')
 const miModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+const url = 'http://localhost:5000/mascotas';
 
 let mascotas = [];
 
 async function listarMascotas() {
     try {
-        const respuesta = await fetch('http://localhost:5000/mascotas');
+        const respuesta = await fetch(url);
         const mascotasDelServer = await respuesta.json();
         if (Array.isArray(mascotasDelServer) && mascotasDelServer.length > 0) {
             mascotas = mascotasDelServer;
@@ -39,23 +40,36 @@ async function listarMascotas() {
     }
 }
 
-function enviarDatos(e) {
+async function enviarDatos(e) {
     e.preventDefault();
-    const datos = {
-        nombre: nombre.value,
-        dueno: dueno.value,
-        tipo: tipo.value
+    try {
+        const datos = {
+            nombre: nombre.value,
+            dueno: dueno.value,
+            tipo: tipo.value
+        };
+        let method = 'POST';
+        let urlEnvio = url;
+        const accion = btnGuardar.innerHTML;
+        if (accion === 'Editar') {
+            method = 'PUT'
+            mascotas[indice.value] = datos;
+            urlEnvio = `${url}/${indice.value}`;
+        };
+        const respuesta = await fetch(urlEnvio, {
+            method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(datos),
+        });
+        if (respuesta.ok) {
+            listarMascotas();
+            resetModal();
+        }
+    } catch (error) {
+        throw error;
     }
-    const accion = btnGuardar.innerHTML;
-    if (btnGuardar.innerHTML === 'Editar') {
-        mascotas[indice.value] = datos;
-    } else if (btnGuardar.innerHTML === 'Crear') {
-        mascotas.push(datos);
-    } else {
-        return;
-    }
-    listarMascotas();
-    resetModal();
 }
 
 function editar(index) {
