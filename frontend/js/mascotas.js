@@ -15,12 +15,13 @@ async function listarMascotas() {
     try {
         const respuesta = await fetch(url);
         const mascotasDelServer = await respuesta.json();
-        if (Array.isArray(mascotasDelServer) && mascotasDelServer.length > 0) {
+        if (Array.isArray(mascotasDelServer)) {
             mascotas = mascotasDelServer;
         }
-        const htmlMascotas = mascotas
-            .map((mascota, index) =>
-                `<tr>
+        if (mascotasDelServer.length > 0) {
+            const htmlMascotas = mascotas
+                .map((mascota, index) =>
+                    `<tr>
         <th scope="row">${index}</th>
         <td>${mascota.nombre}</td>
         <td>${mascota.dueno}</td>
@@ -32,9 +33,13 @@ async function listarMascotas() {
             </div>
         </td>
         </tr>`).join("");
-        listaMascotas.innerHTML = htmlMascotas;
-        Array.from(document.getElementsByClassName('editar')).forEach((botonEditar, index) => botonEditar.onclick = editar(index));
-        Array.from(document.getElementsByClassName('eliminar')).forEach((botonEliminar, index) => botonEliminar.onclick = eliminar(index));
+            listaMascotas.innerHTML = htmlMascotas;
+            Array.from(document.getElementsByClassName('editar')).forEach((botonEditar, index) => botonEditar.onclick = editar(index));
+            Array.from(document.getElementsByClassName('eliminar')).forEach((botonEliminar, index) => botonEliminar.onclick = eliminar(index));
+            return;
+        } else {
+            listaMascotas.innerHTML = `<tr><td colspan="5" center>No hay mascotas</td></tr>`
+        }
     } catch (error) {
         throw error;
     }
@@ -97,9 +102,20 @@ function resetModal() {
 }
 
 function eliminar(index) {
-    return function cuandoClickeo() {
-        mascotas = mascotas.filter((mascota, indiceMascota) => indiceMascota !== index);
-        listarMascotas();
+    const urlEnvio = `${url}/${index}`;
+    return async function cuandoClickeo() {
+        try {
+            const respuesta = await fetch(urlEnvio, {
+                method: 'DELETE',
+            });
+            if (respuesta.ok) {
+                listarMascotas();
+                resetModal();
+            }
+        } catch (error) {
+            throw error;
+        }
+
     }
 }
 
