@@ -1,4 +1,4 @@
-const listaDuenos = document.getElementById('lista-veterinarixs');
+const listaVeterinarixs = document.getElementById('lista-veterinarixs');
 const nombre = document.getElementById('nombre');
 const apellido = document.getElementById('apellido');
 const dni = document.getElementById('dni');
@@ -8,58 +8,76 @@ const form = document.getElementById('form');
 const btnGuardar = document.getElementById('btn-guardar');
 const btnCerrar = document.getElementsByClassName('btn-cerrar')
 const miModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+const url = 'http://localhost:5000/veterinarixs';
 
-let duenos = [{
-    dni: "40536830",
-    nombre: "Luciano",
-    apellido: "de la Iglesia",
-    pais: "Argentina"
-},
-{
-    dni: "42656320",
-    nombre: "Ailen",
-    apellido: "Aguino",
-    pais: "Argentina"
-}];
+let veterinarixs = [];
 
-function listarDuenos() {
-    const htmlVeterinarixs = duenos.map((veterinarix, index) =>
-        `<tr>
-        <th scope="row">${index}</th>
-        <td>${veterinarix.dni}</td>
-        <td>${veterinarix.nombre}</td>
-        <td>${veterinarix.apellido}</td>
-        <td>${veterinarix.pais}</td>
-        <td>
-            <div class="btn-group" role="group" aria-label="Basic example">
-                <button type="button" class="btn btn-primary editar"><i class="bi bi-pencil"></i></button>
-                <button type="button" class="btn btn-danger eliminar"><i class="bi bi-trash"></i></button>
-            </div>
-        </td>
-        </tr>`).join("");
-    listaDuenos.innerHTML = htmlVeterinarixs;
-    Array.from(document.getElementsByClassName('editar')).forEach((botonEditar, index) => botonEditar.onclick = editar(index));
-    Array.from(document.getElementsByClassName('eliminar')).forEach((botonEliminar, index) => botonEliminar.onclick = eliminar(index));
+async function listarVeterinarixs() {
+    try {
+        const respuesta = await fetch(url);
+        const veterinarixsDelServer = await respuesta.json();
+        if (Array.isArray(veterinarixsDelServer)) {
+            veterinarixs = veterinarixsDelServer;
+        }
+        if (veterinarixs.length > 0) {
+            const htmlVeterinarixs = veterinarixs.map((veterinarix, index) =>
+                `<tr>
+            <th scope="row">${index}</th>
+            <td>${veterinarix.dni}</td>
+            <td>${veterinarix.nombre}</td>
+            <td>${veterinarix.apellido}</td>
+            <td>${veterinarix.pais}</td>
+            <td>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-primary editar"><i class="bi bi-pencil"></i></button>
+                    <button type="button" class="btn btn-danger eliminar"><i class="bi bi-trash"></i></button>
+                </div>
+            </td>
+            </tr>`).join("");
+            listaVeterinarixs.innerHTML = htmlVeterinarixs;
+            Array.from(document.getElementsByClassName('editar')).forEach((botonEditar, index) => botonEditar.onclick = editar(index));
+            Array.from(document.getElementsByClassName('eliminar')).forEach((botonEliminar, index) => botonEliminar.onclick = eliminar(index));
+            return;
+        } else {
+            listaVeterinarixs.innerHTML = `<tr><td colspan="6">No hay veterinarixs</td></tr>`
+        }
+    } catch (error) {
+        $(".alert").show();
+    }
 }
 
-function enviarDatos(e) {
+
+async function enviarDatos(e) {
     e.preventDefault();
-    const datos = {
-        dni : dni.value,
-        nombre: nombre.value,
-        apellido: apellido.value,
-        pais: pais.value
-    }
-    const accion = btnGuardar.innerHTML;
-    if (btnGuardar.innerHTML === 'Editar') {
-        duenos[indice.value] = datos;
-    } else if (btnGuardar.innerHTML === 'Crear') {
-        duenos.push(datos);
-    } else {
-        return;
-    }
-    listarDuenos();
-    resetModal();
+    try {
+        const datos = {
+            dni: dni.value,
+            nombre: nombre.value,
+            apellido: apellido.value,
+            pais: pais.value
+        };
+        let method = 'POST';
+        let urlEnvio = url;
+        const accion = btnGuardar.innerHTML;
+        if (accion === 'Editar') {
+            method = 'PUT';
+            veterinarixs[indice.value] = datos;
+            urlEnvio = `${url}/${indice.value}`;
+        };
+        const respuesta = await fetch(urlEnvio, {
+            method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(datos),
+        });
+        if (respuesta.ok) {
+            listarVeterinarixs();
+            resetModal();
+        };
+    } catch (error) {
+        $(".alert").show();
+    };
 }
 
 function editar(index) {
@@ -68,7 +86,7 @@ function editar(index) {
         miModal.toggle();
         btnGuardar.classList.remove("btn-success");
         btnGuardar.classList.add("btn-primary");
-        const veterinarix = duenos[index];
+        const veterinarix = veterinarixs[index];
         dni.value = veterinarix.dni;
         nombre.value = veterinarix.nombre;
         apellido.value = veterinarix.apellido;
@@ -89,13 +107,23 @@ function resetModal() {
 }
 
 function eliminar(index) {
-    return function cuandoClickeo() {
-        duenos = duenos.filter((veterinarix, indiceVeterinarix) => indiceVeterinarix !== index);
-        listarDuenos();
+    const urlEnvio = `${url}/${index}`;
+    return async function cuandoClickeo() {
+        try {
+            const respuesta = await fetch(urlEnvio, {
+                method: 'DELETE',
+            });
+            if (respuesta.ok) {
+                listarVeterinarixs();
+                resetModal();
+            }
+        } catch (error) {
+            $(".alert").show();
+        }
     }
 }
 
-listarDuenos();
+listarVeterinarixs();
 form.onsubmit = enviarDatos;
 btnGuardar.onclick = enviarDatos;
 btnCerrar[0].onclick = resetModal;
