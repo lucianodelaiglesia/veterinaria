@@ -38,7 +38,7 @@ async function listarMascotas() {
             Array.from(document.getElementsByClassName('eliminar')).forEach((botonEliminar, index) => botonEliminar.onclick = eliminar(index));
             return;
         } else {
-            listaMascotas.innerHTML = `<tr><td colspan="5" center>No hay mascotas</td></tr>`
+            listaMascotas.innerHTML = `<tr><td colspan="5" class="lista-vacia">No hay mascotas</td></tr>`
         }
     } catch (error) {
         $(".alert").show();

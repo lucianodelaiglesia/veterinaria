@@ -39,7 +39,7 @@ async function listarDuenos() {
             Array.from(document.getElementsByClassName('eliminar')).forEach((botonEliminar, index) => botonEliminar.onclick = eliminar(index));
             return;
         } else {
-            listaDuenos.innerHTML = `<tr><td colspan="6">No hay dueños</td></tr>`
+            listaDuenos.innerHTML = `<tr><td colspan="6" class="lista-vacia">No hay dueños</td></tr>`
         }
     } catch (error) {
         $(".alert").show();

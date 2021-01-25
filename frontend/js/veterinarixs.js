@@ -39,7 +39,7 @@ async function listarVeterinarixs() {
             Array.from(document.getElementsByClassName('eliminar')).forEach((botonEliminar, index) => botonEliminar.onclick = eliminar(index));
             return;
         } else {
-            listaVeterinarixs.innerHTML = `<tr><td colspan="6">No hay veterinarixs</td></tr>`
+            listaVeterinarixs.innerHTML = `<tr><td colspan="6" class="lista-vacia">No hay veterinarixs</td></tr>`
         }
     } catch (error) {
         $(".alert").show();
