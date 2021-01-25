@@ -41,7 +41,7 @@ async function listarMascotas() {
             listaMascotas.innerHTML = `<tr><td colspan="5" center>No hay mascotas</td></tr>`
         }
     } catch (error) {
-        throw error;
+        $(".alert").show();
     }
 }
 
@@ -73,7 +73,7 @@ async function enviarDatos(e) {
             resetModal();
         }
     } catch (error) {
-        throw error;
+        $(".alert").show();
     }
 }
 
@@ -113,7 +113,7 @@ function eliminar(index) {
                 resetModal();
             }
         } catch (error) {
-            throw error;
+            $(".alert").show();
         }
 
     }

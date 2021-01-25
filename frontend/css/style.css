@@ -1,7 +1,20 @@
-.actions-menu{
+.actions-menu {
     padding: 40px 30px;
 }
 
-.actions-menu h1{
+.actions-menu h1 {
     margin-bottom: 20px;
+}
+
+.actions-menu-content {
+    display: flex;
+    justify-content: space-between;
+}
+
+.actions-menu-content>button.btn.btn-success {
+    height: 50px;
+}
+
+.alert {
+    display: none;
 }
