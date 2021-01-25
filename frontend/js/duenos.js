@@ -8,58 +8,75 @@ const form = document.getElementById('form');
 const btnGuardar = document.getElementById('btn-guardar');
 const btnCerrar = document.getElementsByClassName('btn-cerrar')
 const miModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+const url = 'http://localhost:5000/duenos';
 
-let duenos = [{
-    dni: "40536830",
-    nombre: "Luciano",
-    apellido: "Dueño",
-    pais: "Argentina"
-},
-{
-    dni: "42656320",
-    nombre: "Ailen",
-    apellido: "Dueña",
-    pais: "Argentina"
-}];
+let duenos = [];
 
-function listarDuenos() {
-    const htmlDuenos = duenos.map((dueno, index) =>
-        `<tr>
-        <th scope="row">${index}</th>
-        <td>${dueno.dni}</td>
-        <td>${dueno.nombre}</td>
-        <td>${dueno.apellido}</td>
-        <td>${dueno.pais}</td>
-        <td>
-            <div class="btn-group" role="group" aria-label="Basic example">
-                <button type="button" class="btn btn-primary editar"><i class="bi bi-pencil"></i></button>
-                <button type="button" class="btn btn-danger eliminar"><i class="bi bi-trash"></i></button>
-            </div>
-        </td>
-        </tr>`).join("");
-    listaDuenos.innerHTML = htmlDuenos;
-    Array.from(document.getElementsByClassName('editar')).forEach((botonEditar, index) => botonEditar.onclick = editar(index));
-    Array.from(document.getElementsByClassName('eliminar')).forEach((botonEliminar, index) => botonEliminar.onclick = eliminar(index));
+async function listarDuenos() {
+    try {
+        const respuesta = await fetch(url);
+        const duenosDelServer = await respuesta.json();
+        if (Array.isArray(duenosDelServer)) {
+            duenos = duenosDelServer;
+        }
+        if (duenos.length > 0) {
+            const htmlDuenos = duenos.map((dueno, index) =>
+                `<tr>
+            <th scope="row">${index}</th>
+            <td>${dueno.dni}</td>
+            <td>${dueno.nombre}</td>
+            <td>${dueno.apellido}</td>
+            <td>${dueno.pais}</td>
+            <td>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-primary editar"><i class="bi bi-pencil"></i></button>
+                    <button type="button" class="btn btn-danger eliminar"><i class="bi bi-trash"></i></button>
+                </div>
+            </td>
+            </tr>`).join("");
+            listaDuenos.innerHTML = htmlDuenos;
+            Array.from(document.getElementsByClassName('editar')).forEach((botonEditar, index) => botonEditar.onclick = editar(index));
+            Array.from(document.getElementsByClassName('eliminar')).forEach((botonEliminar, index) => botonEliminar.onclick = eliminar(index));
+            return;
+        } else {
+            listaDuenos.innerHTML = `<tr><td colspan="6">No hay dueños</td></tr>`
+        }
+    } catch (error) {
+        $(".alert").show();
+    }
 }
 
-function enviarDatos(e) {
+async function enviarDatos(e) {
     e.preventDefault();
-    const datos = {
-        dni: dni.value,
-        nombre: nombre.value,
-        apellido: apellido.value,
-        pais: pais.value
-    }
-    const accion = btnGuardar.innerHTML;
-    if (btnGuardar.innerHTML === 'Editar') {
-        duenos[indice.value] = datos;
-    } else if (btnGuardar.innerHTML === 'Crear') {
-        duenos.push(datos);
-    } else {
-        return;
-    }
-    listarDuenos();
-    resetModal();
+    try {
+        const datos = {
+            dni: dni.value,
+            nombre: nombre.value,
+            apellido: apellido.value,
+            pais: pais.value
+        };
+        let method = 'POST';
+        let urlEnvio = url;
+        const accion = btnGuardar.innerHTML;
+        if (accion === 'Editar') {
+            method = 'PUT';
+            duenos[indice.value] = datos;
+            urlEnvio = `${url}/${indice.value}`;
+        };
+        const respuesta = await fetch(urlEnvio, {
+            method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(datos),
+        });
+        if (respuesta.ok) {
+            listarDuenos();
+            resetModal();
+        };
+    } catch (error) {
+        $(".alert").show();
+    };
 }
 
 function editar(index) {
@@ -89,9 +106,19 @@ function resetModal() {
 }
 
 function eliminar(index) {
-    return function cuandoClickeo() {
-        duenos = duenos.filter((dueno, indiceDueno) => indiceDueno !== index);
-        listarDuenos();
+    const urlEnvio = `${url}/${index}`;
+    return async function cuandoClickeo() {
+        try {
+            const respuesta = await fetch(urlEnvio, {
+                method: 'DELETE',
+            });
+            if (respuesta.ok) {
+                listarDuenos();
+                resetModal();
+            }
+        } catch (error) {
+            $(".alert").show();
+        }
     }
 }
 
