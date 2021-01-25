@@ -15,8 +15,8 @@ async function listarConsultas() {
             const htmlConsultas = consultas.map((consulta, index) =>
                 `<tr>
                 <th scope="row">${index}</th>
-                <td>${consulta.mascota}</td>
-                <td>${consulta.veterinarix}</td>
+                <td>${consulta.mascota.nombre}</td>
+                <td>${consulta.veterinarix.nombre} ${consulta.veterinarix.apellido}</td>
                 <td>${consulta.diagnostico}</td>
                 <td>${consulta.fechaCreacion}</td>
                 <td>${consulta.fechaEdicion}</td>
