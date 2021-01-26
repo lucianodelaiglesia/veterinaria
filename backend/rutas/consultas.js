@@ -7,10 +7,11 @@ module.exports = function consultasHandler({ consultas, veterinarixs, mascotas }
                 }
                 return callback(404, { mensaje: `consulta ${data.indice} no encontrado` });
             }
-            const consultasConRelaciones = consultas.map((consultas) => (
-                {...consultas,
-                    mascota: mascotas[consultas.mascota],
-                    veterinarix: veterinarixs[consultas.veterinarix],
+            const consultasConRelaciones = consultas.map((consulta) => (
+                {
+                    ...consulta,
+                    mascota: { ...mascotas[consulta.mascota], id: consulta.mascota },
+                    veterinarix: { ...veterinarixs[consulta.veterinarix], id: consulta.veterinarix },
                 }));
             callback(200, consultasConRelaciones);
         },
