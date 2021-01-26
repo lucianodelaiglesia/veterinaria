@@ -8,6 +8,7 @@ const form = document.getElementById('form');
 const btnGuardar = document.getElementById('btn-guardar');
 const btnCerrar = document.getElementsByClassName('btn-cerrar')
 const miModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+const formulario = document.getElementById("formulario");
 const url = 'http://localhost:5000/duenos';
 
 let duenos = [];
@@ -21,7 +22,7 @@ async function listarDuenos() {
         }
         if (duenos.length > 0) {
             const htmlDuenos = duenos.map((dueno, index) =>
-                `<tr>
+            `<tr>
             <th scope="row">${index}</th>
             <td>${dueno.dni}</td>
             <td>${dueno.nombre}</td>
@@ -42,7 +43,7 @@ async function listarDuenos() {
             listaDuenos.innerHTML = `<tr><td colspan="6" class="lista-vacia">No hay dueños</td></tr>`
         }
     } catch (error) {
-        $(".alert").show();
+        $(".alert-danger").show();
     }
 }
 
@@ -54,29 +55,34 @@ async function enviarDatos(e) {
             nombre: nombre.value,
             apellido: apellido.value,
             pais: pais.value
-        };
-        let method = 'POST';
-        let urlEnvio = url;
-        const accion = btnGuardar.innerHTML;
-        if (accion === 'Editar') {
-            method = 'PUT';
-            duenos[indice.value] = datos;
-            urlEnvio = `${url}/${indice.value}`;
-        };
-        const respuesta = await fetch(urlEnvio, {
-            method,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(datos),
-        });
-        if (respuesta.ok) {
-            listarDuenos();
-            resetModal();
-        };
+        }
+        if (validar(datos)) {
+            let method = 'POST';
+            let urlEnvio = url;
+            const accion = btnGuardar.innerHTML;
+            if (accion === 'Editar') {
+                method = 'PUT';
+                duenos[indice.value] = datos;
+                urlEnvio += `/${indice.value}`;
+            }
+            const respuesta = await fetch(urlEnvio, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(datos),
+            });
+            if (respuesta.ok) {
+                listarDuenos();
+                miModal.toggle();
+                resetModal();
+            }
+            return;
+        }
+        $(".alert-warning").show();
     } catch (error) {
-        $(".alert").show();
-    };
+        $(".alert-danger").show();
+    }
 }
 
 function editar(index) {
@@ -86,23 +92,23 @@ function editar(index) {
         btnGuardar.classList.remove("btn-success");
         btnGuardar.classList.add("btn-primary");
         const dueno = duenos[index];
+        indice.value = index;
         dni.value = dueno.dni;
         nombre.value = dueno.nombre;
         apellido.value = dueno.apellido;
         pais.value = dueno.pais;
-        indice.value = index;
     }
 }
 
 function resetModal() {
-    dni.value = '';
-    nombre.value = '';
-    apellido.value = '';
-    pais.value = '';
-    indice.value = '';
-    btnGuardar.innerHTML = 'Crear'
+    btnGuardar.innerHTML = 'Crear';
+    [dni, nombre, apellido, pais, indice].forEach((inputActual) => {
+        inputActual.value = "";
+        inputActual.classList.remove("is-invalid");
+    })
     btnGuardar.classList.remove("btn-primary");
     btnGuardar.classList.add("btn-success");
+    $(".alert-warning").hide();
 }
 
 function eliminar(index) {
@@ -117,9 +123,24 @@ function eliminar(index) {
                 resetModal();
             }
         } catch (error) {
-            $(".alert").show();
+            $(".alert-danger").show();
         }
     }
+}
+
+function validar(datos) {
+    let respuesta = true;
+    if (typeof datos !== 'object') return false;
+    for (let key in datos) {
+        if (datos[key].length === 0) {
+            document.getElementById(key).classList.add("is-invalid");
+            respuesta = false;
+        } else {
+            document.getElementById(key).classList.remove("is-invalid");
+            document.getElementById(key).classList.remove("is-valid");
+        }
+    }
+    return respuesta;
 }
 
 listarDuenos();

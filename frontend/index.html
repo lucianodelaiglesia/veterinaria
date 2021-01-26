@@ -56,8 +56,7 @@
                         data-bs-target="#exampleModal">Nuevo</button>
                     <div class="alert alert-danger alert-dismissible" role="alert">
                         <strong>Ups!</strong> Algo salió mal :(
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </div>
             </div>
@@ -86,14 +85,14 @@
                         aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="form" class="row g-2">
+                    <form id="form" class="row g-2 needs-validation" novalidate>
                         <input type="hidden" id="indice" />
                         <div class="col">
                             <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Nombre">
                         </div>
                         <div class="col">
                             <select id="dueno" class="form-select" aria-label="Default select example">
-                                <option selected>Dueño</option>
+                                <option value="">Dueño</option>
                                 <option>Luchito</option>
                                 <option>Ailux</option>
                                 <option>Pepe</option>
@@ -102,7 +101,7 @@
                         </div>
                         <div>
                             <select id="tipo" class="form-select" aria-label="Default select example">
-                                <option selected>Tipo de Animal</option>
+                                <option value="">Tipo de Animal</option>
                                 <option>Perro</option>
                                 <option>Gato</option>
                                 <option>Pájaro</option>
@@ -112,6 +111,9 @@
                     </form>
                 </div>
                 <div class="modal-footer">
+                    <div class="alert alert-warning alert-dismissible col-6" role="alert">
+                        Formulario incompleto.
+                    </div>
                     <button type="button" class="btn btn-secondary btn-cerrar" data-bs-dismiss="modal">Cerrar</button>
                     <button type="button" id="btn-guardar" class="btn btn-success">Crear</button>
                 </div>
