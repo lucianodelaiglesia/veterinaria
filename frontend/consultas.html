@@ -56,8 +56,7 @@
                         data-bs-target="#exampleModal">Nuevo</button>
                     <div class="alert alert-danger alert-dismissible" role="alert">
                         <strong>Ups!</strong> Algo salió mal :(
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </div>
             </div>
@@ -88,16 +87,16 @@
                         aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="form" class="row g-2">
+                    <form id="form" class="row g-2 needs-validation" novalidate>
                         <input type="hidden" id="indice" />
                         <div class="col">
                             <select id="mascota" class="form-select" aria-label="Default select example">
-                                <option selected>Seleccione una mascota</option>
+                                <option value="">Seleccione una mascota</option>
                             </select>
                         </div>
                         <div class="col">
                             <select id="veterinarix" class="form-select" aria-label="Default select example">
-                                <option selected>Seleccione veterinarix</option>
+                                <option value="">Seleccione veterinarix</option>
                             </select>
                         </div>
                         <div>
@@ -105,7 +104,7 @@
                         </div>
                         <div>
                             <select id="diagnostico" class="form-select" aria-label="Default select example">
-                                <option selected>Seleccionar Diagnostico</option>
+                                <option value="">Seleccionar Diagnostico</option>
                                 <option>Prurito de piel (sarna)</option>
                                 <option>Moquillo</option>
                                 <option>Parvovirosis</option>
@@ -115,6 +114,9 @@
                     </form>
                 </div>
                 <div class="modal-footer">
+                    <div class="alert alert-warning alert-dismissible col-6" role="alert">
+                        Formulario incompleto.
+                    </div>
                     <button type="button" class="btn btn-secondary btn-cerrar" data-bs-dismiss="modal">Cerrar</button>
                     <button type="button" id="btn-guardar" class="btn btn-success">Crear</button>
                 </div>

@@ -7,6 +7,7 @@ const indice = document.getElementById("indice");
 const btnGuardar = document.getElementById('btn-guardar');
 const btnCerrar = document.getElementsByClassName('btn-cerrar');
 const miModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+const formulario = document.getElementById("formulario");
 const url = 'http://localhost:5000';
 
 let consultas = [];
@@ -40,7 +41,7 @@ async function listarConsultas() {
             Array.from(document.getElementsByClassName('editar')).forEach((botonEditar, index) => botonEditar.onclick = editar(index));
         }
     } catch (error) {
-        $(".alert").show();
+        $(".alert-danger").show();
     }
 }
 
@@ -63,7 +64,7 @@ async function listarMascotas() {
             });
         }
     } catch (error) {
-        $(".alert").show();
+        $(".alert-danger").show();
     }
 }
 
@@ -86,7 +87,7 @@ async function listarVeterinarixs() {
             });
         }
     } catch (error) {
-        $(".alert").show();
+        $(".alert-danger").show();
     }
 }
 
@@ -103,7 +104,7 @@ function editar(index) {
         mascota.value = consulta.mascota.id;
         veterinarix.value = consulta.veterinarix.id;
         historia.value = consulta.historia;
-        diagnostico.value = consulta.value;
+        diagnostico.value = consulta.diagnostico;
     }
 }
 
@@ -117,39 +118,59 @@ async function enviarDatos(e) {
             historia: historia.value,
             diagnostico: diagnostico.value
         }
-        let method = 'POST';
-        let urlEnvio = `${url}/${entidad}`;
-        const accion = btnGuardar.innerHTML;
-        if (accion === 'Editar') {
-            method = 'PUT';
-            consultas[indice.value] = datos;
-            urlEnvio += `/${indice.value}`;
+        if (validar(datos)) {
+            let method = 'POST';
+            let urlEnvio = `${url}/${entidad}`;
+            const accion = btnGuardar.innerHTML;
+            if (accion === 'Editar') {
+                method = 'PUT';
+                consultas[indice.value] = datos;
+                urlEnvio += `/${indice.value}`;
+            }
+            const respuesta = await fetch(urlEnvio, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(datos),
+            });
+            if (respuesta.ok) {
+                listarConsultas();
+                miModal.toggle();
+                resetModal();
+            }
+            return;
         }
-        const respuesta = await fetch(urlEnvio, {
-            method,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(datos),
-        });
-        if (respuesta.ok) {
-            listarConsultas();
-            resetModal();
-        }
+        $(".alert-warning").show();
     } catch (error) {
-        $(".alert").show();
+        $(".alert-danger").show();
     }
 }
 
 function resetModal() {
-    mascota.value = '';
-    veterinarix.value = '';
-    diagnostico.value = '';
-    historia.value = '';
-    indice.value = '';
     btnGuardar.innerHTML = 'Crear';
+    [mascota, veterinarix, diagnostico, historia, indice].forEach((inputActual) => {
+        inputActual.value = "";
+        inputActual.classList.remove("is-invalid");
+    })
     btnGuardar.classList.remove("btn-primary");
     btnGuardar.classList.add("btn-success");
+    $(".alert-warning").hide();
+}
+
+function validar(datos) {
+    let respuesta = true;
+    if (typeof datos !== 'object') return false;
+    for (let key in datos) {
+        if (datos[key].length === 0) {
+            document.getElementById(key).classList.add("is-invalid");
+            respuesta = false;
+        } else {
+            document.getElementById(key).classList.remove("is-invalid");
+            document.getElementById(key).classList.remove("is-valid");
+        }
+    }
+    return respuesta;
 }
 
 form.onsubmit = enviarDatos;
