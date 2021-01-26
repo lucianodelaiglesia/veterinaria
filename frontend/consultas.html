@@ -56,7 +56,7 @@
                         data-bs-target="#exampleModal">Nuevo</button>
                     <div class="alert alert-danger alert-dismissible" role="alert">
                         <strong>Ups!</strong> Algo salió mal :(
-                        <button type="button" class="btn-close btn-cerrar" data-bs-dismiss="alert" aria-label="Close">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                         </button>
                     </div>
                 </div>
@@ -90,14 +90,26 @@
                 <div class="modal-body">
                     <form id="form" class="row g-2">
                         <input type="hidden" id="indice" />
-                        <div>
+                        <div class="col">
                             <select id="mascota" class="form-select" aria-label="Default select example">
                                 <option selected>Seleccione una mascota</option>
                             </select>
                         </div>
-                        <div>
+                        <div class="col">
                             <select id="veterinarix" class="form-select" aria-label="Default select example">
                                 <option selected>Seleccione veterinarix</option>
+                            </select>
+                        </div>
+                        <div>
+                            <textarea id="historia" class="form-control" placeholder="Historia"></textarea>
+                        </div>
+                        <div>
+                            <select id="diagnostico" class="form-select" aria-label="Default select example">
+                                <option selected>Seleccionar Diagnostico</option>
+                                <option>Prurito de piel (sarna)</option>
+                                <option>Moquillo</option>
+                                <option>Parvovirosis</option>
+                                <option>Trauma cefálico</option>
                             </select>
                         </div>
                     </form>
