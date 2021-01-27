@@ -8,7 +8,7 @@ const btnGuardar = document.getElementById('btn-guardar');
 const btnCerrar = document.getElementsByClassName('btn-cerrar');
 const miModal = new bootstrap.Modal(document.getElementById('exampleModal'));
 const formulario = document.getElementById("formulario");
-const url = 'http://localhost:5000';
+const url = 'https://veterinaria-backend-seven.vercel.app';
 
 let consultas = [];
 let mascotas = [];
