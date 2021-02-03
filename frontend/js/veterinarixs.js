@@ -3,7 +3,6 @@ const nombre = document.getElementById('nombre');
 const apellido = document.getElementById('apellido');
 const dni = document.getElementById('dni');
 const indice = document.getElementById('indice')
-const pais = document.getElementById('pais');
 const form = document.getElementById('form');
 const btnGuardar = document.getElementById('btn-guardar');
 const btnCerrar = document.getElementsByClassName('btn-cerrar')
@@ -27,7 +26,6 @@ async function listarVeterinarixs() {
             <td>${veterinarix.dni}</td>
             <td>${veterinarix.nombre}</td>
             <td>${veterinarix.apellido}</td>
-            <td>${veterinarix.pais}</td>
             <td>
                 <div class="btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-primary editar"><i class="bi bi-pencil"></i></button>
@@ -55,7 +53,6 @@ async function enviarDatos(e) {
             dni: dni.value,
             nombre: nombre.value,
             apellido: apellido.value,
-            pais: pais.value
         }
         if (validar(datos)) {
             let method = 'POST';
@@ -97,13 +94,12 @@ function editar(index) {
         dni.value = veterinarix.dni;
         nombre.value = veterinarix.nombre;
         apellido.value = veterinarix.apellido;
-        pais.value = veterinarix.pais;
     }
 }
 
 function resetModal() {
     btnGuardar.innerHTML = 'Crear';
-    [dni, nombre, apellido, pais, indice].forEach((inputActual) => {
+    [dni, nombre, apellido, indice].forEach((inputActual) => {
         inputActual.value = "";
         inputActual.classList.remove("is-invalid");
     })

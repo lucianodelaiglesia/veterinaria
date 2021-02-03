@@ -5,14 +5,14 @@ module.exports = {
         { nombre: 'Sasha', dueno: 'Luchito', tipo: 'Perro' },
     ],
     veterinarixs: [
-        { dni: '40536830', nombre: 'Luciano', apellido: 'de la Iglesia', pais: 'Argentina' },
-        { dni: '42656320', nombre: 'Ailen', apellido: 'Aguino', pais: 'Argentina' },
-        { dni: '11111111', nombre: 'El', apellido: 'Pepe', pais: 'Colombia' },
+        { dni: '40536830', nombre: 'Luciano', apellido: 'de la Iglesia' },
+        { dni: '42656320', nombre: 'Ailen', apellido: 'Aguino' },
+        { dni: '11111111', nombre: 'El', apellido: 'Pepe' },
     ],
     duenos: [
-        { dni: '40536830', nombre: 'Luciano', apellido: 'Dueño', pais: 'Argentina' },
-        { dni: '42656320', nombre: 'Ailen', apellido: 'Dueña', pais: 'Argentina' },
-        { dni: '11111111', nombre: 'El', apellido: 'Dueño', pais: 'Colombia' },
+        { dni: '40536830', nombre: 'Luciano', apellido: 'Dueño' },
+        { dni: '42656320', nombre: 'Ailen', apellido: 'Dueña' },
+        { dni: '11111111', nombre: 'El', apellido: 'Dueño' },
     ],
     consultas: [
         {
