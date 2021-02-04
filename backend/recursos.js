@@ -1,8 +1,8 @@
 module.exports = {
     mascotas: [
-        { nombre: 'Bambi', dueno: 'Luchito', tipo: 'Perro' },
-        { nombre: 'Misha', dueno: 'Luchito', tipo: 'Gato' },
-        { nombre: 'Sasha', dueno: 'Luchito', tipo: 'Perro' },
+        { nombre: 'Bambi', dueno: 'Luciano Dueño', tipo: 'Perro' },
+        { nombre: 'Misha', dueno: 'Luciano Dueño', tipo: 'Gato' },
+        { nombre: 'Sasha', dueno: 'Luciano Dueño', tipo: 'Perro' },
     ],
     veterinarixs: [
         { dni: '40536830', nombre: 'Luciano', apellido: 'de la Iglesia' },
